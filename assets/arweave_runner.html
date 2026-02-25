@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <script src="arweave_bridge.js"></script>
+  </head>
+  <body>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error("Error caught:", message, "at", source, lineno + ":" + colno, error);
+      };
+      // Ensure ArweaveBridge is actually available
+      if (!globalThis.ArweaveBridge) {
+        console.error("ArweaveBridge not found");
+        console.log(location.href, isSecureContext, !!crypto, !!crypto?.subtle)
+      }
+    </script>
+  </body>
+</html>
