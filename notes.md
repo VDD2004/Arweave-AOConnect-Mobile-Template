@@ -132,7 +132,7 @@ globalThis.aoInstance: {
   getMessageById: ProcessId;
 };
 ```
-See [this](https://Rs8Dr0I3-qPkiwKikoSjiwom3np1WqEDHolcpR6rjw4) (Arweave TxID: `Rs8Dr0I3-qPkiwKikoSjiwom3np1WqEDHolcpR6rjw4`) zip file of the full bridge implementation
+See [this](https://arweave.net/Rs8Dr0I3-qPkiwKikoSjiwom3np1WqEDHolcpR6rjw4) (Arweave TxID: `Rs8Dr0I3-qPkiwKikoSjiwom3np1WqEDHolcpR6rjw4`) zip file of the full bridge implementation
 
 ### Dart Side
 Purpose: provide a bridge implementation that interacts with the bundled JS WebView side and can be used by the rest of the app.
