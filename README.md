@@ -152,4 +152,42 @@ flutter build apk
 
 ---
 
+## 9) Fork + build + ship (mobile-only packaging)
+
+This repo is **mobile-first** and is **not** deployed as an Arweave manifest web app.  
+Packaging model:
+
+- Immutable **source snapshot** (code archive) on Arweave
+- Mobile binaries (APK/AAB/IPA) distributed via your own system
+
+### Publish code archive to Arweave
+
+From repo root:
+
+```bash
+npm run deploy
+```
+
+Optional arguments:
+
+```bash
+node scripts/deploy.mjs --wallet=/absolute/path/wallet.json --ref=HEAD
+```
+
+### Build mobile binary
+
+```bash
+flutter build apk --release
+```
+
+### Publish binary
+
+- Upload APK/AAB to GitHub Releases
+
+### Latest links
+
+- Repository: `https://github.com/VDD2004/Arweave-AOConnect-Mobile-Template`
+
+---
+
 If emulator/network/networking issues appear (especially local HyperBEAM over HTTP), see [notes.md](notes.md) and Android config under [android/](android).

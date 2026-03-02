@@ -11,6 +11,8 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+zips
+node_modules
 
 # IntelliJ related
 *.iml
@@ -32,6 +34,7 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+pubspec.lock
 
 # Symbolication related
 app.*.symbols
@@ -46,7 +49,6 @@ app.*.map.json
 
 # arweave bridge related
 arweave_bridge/package-lock.json
-arweave_bridge/node_modules
 arweave_bridge/.dart_tool
 
-zips
+wallet.json

@@ -1,0 +1,22 @@
+{
+  "name": "arweave-bridge",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@dha-team/arbundles": "^1.0.4",
+    "@permaweb/aoconnect": "^0.0.93",
+    "arweave": "^1.15.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1",
+    "vite-plugin-node-polyfills": "^0.25.0"
+  },
+  "scripts": {
+    "arweave_bridge:build": "cd arweave_bridge && vite build",
+    "create_archive": "node scripts/create-code-archive.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "deploy:ship": "node scripts/create-code-archive.mjs && node scripts/deploy.mjs",
+    "build:app": "flutter build apk --release",
+    "wallet:new": "node scripts/generate-wallet.mjs"
+  }
+}
