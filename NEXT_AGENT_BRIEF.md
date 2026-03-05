@@ -64,6 +64,11 @@ Primary spec:
 - `npm run build`
 - `cd ..`
 
+### Deploy (canonical)
+- `npm run deploy`
+- `node scripts/deploy.mjs --wallet=/absolute/path/to/wallet.json --target=both --apk-path=build/app/outputs/apk/release/app-release.apk`
+- Use explicit `--key=value` flags for consistency across shells.
+
 ---
 
 ## Expected deliverable style (seed-like)

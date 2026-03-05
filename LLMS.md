@@ -487,6 +487,15 @@ Bridge build:
 - npm run build
 - cd ..
 
+Deploy (canonical argument style):
+- npm run deploy
+- node scripts/deploy.mjs --wallet=/absolute/path/to/wallet.json --target=code
+- node scripts/deploy.mjs --wallet=/absolute/path/to/wallet.json --gateway=https://arweave.net --target=both --apk-path=build/app/outputs/apk/release/app-release.apk
+
+Troubleshooting deploy args:
+- Prefer explicit `--key=value` form for all deploy args.
+- If logs show fallback defaults (`wallet.json`, `https://arweave.net`), arguments were not applied as intended.
+
 General:
 - Prefer running on Android emulator (documented path).
 - For local HB HTTP, ensure Android cleartext config is enabled.

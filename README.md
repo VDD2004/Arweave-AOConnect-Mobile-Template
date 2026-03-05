@@ -168,11 +168,19 @@ From repo root:
 npm run deploy
 ```
 
-Optional arguments:
+Optional arguments (recommended canonical form: `--key=value`):
 
 ```bash
 node scripts/deploy.mjs --wallet=/absolute/path/wallet.json --ref=HEAD
 ```
+
+Windows example:
+
+```bash
+node scripts/deploy.mjs --wallet="D:\path\to\wallet.json" --gateway=https://arweave.net --target=code
+```
+
+If output shows fallback defaults (for example `Using wallet: wallet.json` or `Gateway: https://arweave.net`), re-run using explicit `--key=value` arguments.
 
 ### Build mobile binary
 

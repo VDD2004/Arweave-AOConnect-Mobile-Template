@@ -82,6 +82,30 @@ Reference: [LLMS.md](LLMS.md)
 - `npm run build`
 - `cd ..`
 
+### Deploy (canonical)
+- `npm run deploy`
+- `node scripts/deploy.mjs --wallet=/absolute/path/to/wallet.json --target=code`
+- Use explicit `--key=value` args for deploy flags (`--gateway=...`, `--apk-path=...`, `--forked-from=...`).
+
+---
+
+## Commands
+
+### Run app
+- `flutter pub get`
+- `flutter run`
+
+### Rebuild JS bridge
+- `cd arweave_bridge`
+- `npm install`
+- `npm run build`
+- `cd ..`
+
+### Deploy (canonical)
+- `npm run deploy`
+- `node scripts/deploy.mjs --wallet=/absolute/path/to/wallet.json --target=both --apk-path=build/app/outputs/apk/release/app-release.apk`
+- Use explicit `--key=value` flags for consistency across shells.
+
 ---
 
 ## Config points to customize per fork
@@ -140,3 +164,17 @@ When release tooling is used, output:
 2. Release URL (GitHub Releases/TestFlight)
 
 No Arweave manifest app URL is expected for this repo.
+
+## Chain App Rules
+
+...
+11. Repeatable command sequence:
+   - `npm install`
+   - `npm run wallet:new` (only if wallet is missing and you want explicit generation)
+   - `npm run deploy:ship -- --wallet=/absolute/path/to/wallet.json --forked-from=<arweave-id>`
+
+12. Deploy CLI argument convention:
+   - Use explicit `--key=value` form (for example: `--wallet=/absolute/path/wallet.json`, `--gateway=https://arweave.net`).
+   - Prefer this form in docs and automation to avoid shell parsing ambiguity.
+
+---

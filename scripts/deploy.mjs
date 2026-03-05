@@ -8,8 +8,14 @@ import Arweave from "arweave";
 const root = process.cwd();
 
 function parseArg(name) {
-  const raw = process.argv.find((arg) => arg.startsWith(`--${name}=`));
-  return raw ? raw.slice(name.length + 3).trim() : "";
+  const eqPrefix = `--${name}=`;
+  const exact = `--${name}`;
+  for (let i = 0; i < process.argv.length; i += 1) {
+    const arg = process.argv[i];
+    if (arg.startsWith(eqPrefix)) return arg.slice(eqPrefix.length).trim();
+    if (arg === exact) return (process.argv[i + 1] || "").trim();
+  }
+  return "";
 }
 
 function runBinary(command, args, cwd = root) {
@@ -47,8 +53,12 @@ async function loadWallet(walletArg) {
   return { walletPath, jwk: JSON.parse(raw) };
 }
 
+async function resolveCommit(ref = "HEAD") {
+  return (await runBinary("git", ["rev-parse", ref], root)).stdout.toString("utf8").trim();
+}
+
 async function createCodeArchive({ ref = "HEAD" } = {}) {
-  const commit = (await runBinary("git", ["rev-parse", ref], root)).stdout.toString("utf8").trim();
+  const commit = await resolveCommit(ref);
   const tar = await runBinary("git", ["archive", "--format=tar", ref], root);
   return { commit, data: gzipSync(tar.stdout) };
 }
@@ -73,29 +83,74 @@ async function main() {
   const appVersion = parseArg("app-version") || process.env.APP_VERSION || "0.1.0";
   const forkedFrom = (parseArg("forked-from") || process.env.FORKED_FROM || "").trim();
 
+  const targetRaw = (parseArg("target") || "code").toLowerCase();
+  const target = targetRaw === "archive" ? "code" : targetRaw;
+  if (!["code", "apk", "both"].includes(target)) {
+    throw new Error(`Invalid --target value "${targetRaw}". Use one of: code, apk, both`);
+  }
+
+  const apkPathArg = parseArg("apk-path") || "build/app/outputs/apk/release/app-release.apk";
+  const apkPath = path.resolve(root, apkPathArg);
+  const explicitCodeId = parseArg("code-id");
+
   const { walletPath, jwk } = await loadWallet(walletArg);
   const arweave = Arweave.init({ ...buildGatewayConfig(gateway), timeout: 30_000, logging: false });
 
   console.log(`Using wallet: ${walletPath}`);
   console.log(`Gateway: ${gateway}`);
-
-  const { commit, data } = await createCodeArchive({ ref });
-
-  const codeArchiveId = await uploadTransaction(arweave, jwk, data, [
-    ["Content-Type", "application/gzip"],
-    ["Content-Encoding", "gzip"],
-    ["App-Name", appName],
-    ["App-Version", appVersion],
-    ["Type", "code-archive"],
-    ["Source-Ref", ref],
-    ["Source-Commit", commit],
-    ...(forkedFrom ? [["forked-from", forkedFrom]] : []),
-  ]);
+  console.log(`Target: ${target}`);
 
   const base = publicGateway.replace(/\/+$/, "");
-  console.log("");
-  console.log(`Code Archive ID: ${codeArchiveId}`);
-  console.log(`Code Archive URL: ${base}/${codeArchiveId}`);
+
+  const shouldUploadCode = target === "code" || target === "both";
+  const shouldUploadApk = target === "apk" || target === "both";
+
+  let commit = "";
+  let codeArchiveId = "";
+
+  if (shouldUploadCode) {
+    const archive = await createCodeArchive({ ref });
+    commit = archive.commit;
+
+    codeArchiveId = await uploadTransaction(arweave, jwk, archive.data, [
+      ["Content-Type", "application/gzip"],
+      ["Content-Encoding", "gzip"],
+      ["App-Name", appName],
+      ["App-Version", appVersion],
+      ["Type", "code-archive"],
+      ["Source-Ref", ref],
+      ["Source-Commit", commit],
+      ...(forkedFrom ? [["forked-from", forkedFrom]] : []),
+    ]);
+
+    console.log("");
+    console.log(`Code Archive ID: ${codeArchiveId}`);
+    console.log(`Code Archive URL: ${base}/${codeArchiveId}`);
+  }
+
+  if (shouldUploadApk) {
+    const apkData = await fs.readFile(apkPath);
+    if (!commit) commit = await resolveCommit(ref);
+
+    const codeRef = codeArchiveId || explicitCodeId;
+    const apkId = await uploadTransaction(arweave, jwk, apkData, [
+      ["Content-Type", "application/vnd.android.package-archive"],
+      ["App-Name", appName],
+      ["App-Version", appVersion],
+      ["Type", "release-apk"],
+      ["File-Name", path.basename(apkPath)],
+      ["Source-Ref", ref],
+      ["Source-Commit", commit],
+      ...(codeRef ? [["code", codeRef]] : []),
+      ...(forkedFrom ? [["forked-from", forkedFrom]] : []),
+    ]);
+
+    console.log("");
+    console.log(`APK Path: ${apkPath}`);
+    console.log(`APK ID: ${apkId}`);
+    console.log(`APK URL: ${base}/${apkId}`);
+  }
+
   console.log("");
 }
 

@@ -33,3 +33,6 @@ The markdown files in this repo intend to provide full guidance on working with 
    - `npm install`
    - `npm run wallet:new` (only if wallet is missing and you want explicit generation)
    - `npm run deploy:ship -- --wallet=/absolute/path/to/wallet.json --forked-from=<arweave-id>`
+12. Deploy CLI argument convention:
+   - Use explicit `--key=value` form (for example: `--wallet=/absolute/path/wallet.json`, `--gateway=https://arweave.net`).
+   - Prefer this form in docs and automation to avoid shell parsing ambiguity.

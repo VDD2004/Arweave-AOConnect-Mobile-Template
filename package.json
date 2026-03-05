@@ -14,8 +14,12 @@
   "scripts": {
     "arweave_bridge:build": "cd arweave_bridge && vite build",
     "create_archive": "node scripts/create-code-archive.mjs",
-    "deploy": "node scripts/deploy.mjs",
-    "deploy:ship": "node scripts/create-code-archive.mjs && node scripts/deploy.mjs",
+    "deploy": "node scripts/deploy.mjs --target=both --apk-path=\"build\\app\\outputs\\apk\\release\\app-release.apk\"",
+    "deploy:apk": "node scripts/deploy.mjs --target=apk --apk-path=\"build\\app\\outputs\\apk\\release\\app-release.apk\"",
+    "deploy:archive": "node scripts/deploy.mjs --target=code",
+    "deploy:ship": "node scripts/create-code-archive.mjs && flutter build apk --release && npm run deploy",
+    "deploy:ship:apk": "flutter build apk --release && npm run deploy",
+    "deploy:ship:archive": "node scripts/create-code-archive.mjs && npm run deploy",
     "build:app": "flutter build apk --release",
     "wallet:new": "node scripts/generate-wallet.mjs"
   }
