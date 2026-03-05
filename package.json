@@ -18,8 +18,8 @@
     "deploy:apk": "node scripts/deploy.mjs --target=apk --apk-path=\"build\\app\\outputs\\apk\\release\\app-release.apk\"",
     "deploy:archive": "node scripts/deploy.mjs --target=code",
     "deploy:ship": "node scripts/create-code-archive.mjs && flutter build apk --release && npm run deploy",
-    "deploy:ship:apk": "flutter build apk --release && npm run deploy",
-    "deploy:ship:archive": "node scripts/create-code-archive.mjs && npm run deploy",
+    "deploy:ship:apk": "flutter build apk --release && npm run deploy:apk",
+    "deploy:ship:archive": "node scripts/create-code-archive.mjs && npm run deploy:archive",
     "build:app": "flutter build apk --release",
     "wallet:new": "node scripts/generate-wallet.mjs"
   }
